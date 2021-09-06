@@ -15,12 +15,12 @@ const userSchema = new Schema({
   },
   nickname : {
     type : String,
-    required : true,
+    required : false,
     maxLength : 10,
   },
   isClubMember : {
     type : Boolean,
-    required : true,
+    required : false,
   },
   userClub : {
     type : String,

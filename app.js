@@ -4,17 +4,27 @@ const cookieParser = require('cookie-parser');
 const morgan = require('morgan');
 const redis = require('redis');
 const RedisStore = require('connect-redis')(session);
+const nunjucks = require('nunjucks');
 const dotenv = require('dotenv').config();
+const passport = require('passport');
 const passportConfig = require('./passport');
+const connectDB = require('./schemas');
 // middlewares
 
 const indexRouter = require('./routes');
 const authRouter = require('./routes/auth');
 // routers
 
-passportConfig();
-
 const app = express();
+app.set('view engine', 'html');
+nunjucks.configure('public', {
+  express : app, 
+  watch : true,
+});
+
+passportConfig();
+connectDB();
+
 const redisClient = redis.createClient({
   url : `redis://${process.env.REDIS_HOST}:${process.env.REDIS_PORT}`,
   password : process.env.REDIS_PASSWORD,
@@ -34,6 +44,10 @@ app.use(session({
   },
   store : new RedisStore({client : redisClient})
 }));
+app.use(passport.initialize());
+app.use(passport.session());
+
+
 
 if(process.env.NODE_ENV === 'production'){
   app.use(morgan('combined'));

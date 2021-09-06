@@ -1,8 +1,16 @@
 const express = require('express');
+const passport = require('passport');
+const User = require('../schemas/user');
 const router = express.Router();
+
+router.get('/join', (req, res)=>{
+  res.render('join');
+});
 
 router.post('/join', async(req, res)=>{
   const {username, id, password} = req.body;
+  // username, id, password를 가입할때 받는 것으로 가정.
+  console.log(username, id, password);
   await User.create({
     username : username,
     id : id,
@@ -12,7 +20,11 @@ router.post('/join', async(req, res)=>{
   res.redirect('/');
 });
 
-router.post('/login', (req, res)=>{
+router.get('/login', (req, res)=>{
+  res.render('login');
+});
+
+router.post('/login', (req, res, next)=>{
   passport.authenticate('local', (authError, user, info)=>{
     // local 로그인 인증
     if(authError){
@@ -20,7 +32,7 @@ router.post('/login', (req, res)=>{
       return next(authError);
     }
     if(!user){
-      return res.redirect(`/auth/login/Eror=${info.message}`);
+      return res.redirect(`/auth/login/Error=${info.message}`);
       // 이 부분은 info.message에 따라 다르게 구현할 예정
       // 일단은 리디렉션 시킴
     }
