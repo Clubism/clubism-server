@@ -6,7 +6,7 @@ const posterSchema = new mongoose.Schema(
   { img: { data: Buffer, contentType: String }}
 );
 
-const clubBasicSchema = new Schema({
+const clubIndexSchema = new Schema({
   name : {
     type : String,
     required : true,
@@ -28,4 +28,4 @@ const clubBasicSchema = new Schema({
   },
 });
 
-module.exports = mongoose.model('ClubBasic', clubBasicSchema);
+module.exports = mongoose.model('ClubIndex', clubIndexSchema);
