@@ -6,6 +6,7 @@ const clubSchema = new Schema({
   name : {
     type : String,
     required : true,
+    ref : 'Club',
   },
   memberNumber : {
     type : Number,

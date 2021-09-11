@@ -26,6 +26,10 @@ const userSchema = new Schema({
     type : String,
     ref : 'Club'
   },
+  studentNumber : {
+    type : String,
+    required : false,
+  }
 });
 
 module.exports = mongoose.model('User', userSchema);
