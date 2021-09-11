@@ -1,5 +1,6 @@
 const passport = require('passport');
 const LocalStrategy = require('passport-local').Strategy;
+const bcrypt = require('bcrypt');
 const User = require('../schemas/user');
 
 module.exports = ()=>{
@@ -11,8 +12,10 @@ module.exports = ()=>{
     try{
       const exUser = await User.findOne({id : id});
       console.log(exUser);
-      if(exUser){
-        if(exUser.password === password){  // 비밀번호까지 일치
+      if(exUser){ 
+        const checked = await bcrypt.compare(password, exUser.password);
+        console.log(password, exUser.password);
+        if(checked){  // 비밀번호까지 일치
           done(null, exUser);
         }
         else{ // 비밀번호 틀림
