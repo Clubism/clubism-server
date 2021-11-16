@@ -1,7 +1,10 @@
 const express = require('express');
 const passport = require('passport');
 const User = require('../schemas/user');
+const bcrypt = require('bcrypt');
 const router = express.Router();
+
+const saltRounds = 10;
 
 router.get('/join', (req, res)=>{
   res.render('join');
@@ -11,12 +14,17 @@ router.post('/join', async(req, res)=>{
   const {username, id, password} = req.body;
   // username, id, password를 가입할때 받는 것으로 가정.
   console.log(username, id, password);
-  await User.create({
-    username : username,
-    id : id,
-    password : password,
-    // 이 부분은 회원가입 폼에 따라서 달라짐.
+  bcrypt.hash(password, saltRounds, async(err, hashedPassword) =>{
+    // Store hash in your password DB.
+    console.log(hashedPassword);
+    await User.create({
+      username : username,
+      id : id,
+      password : hashedPassword,
+      // 이 부분은 회원가입 폼에 따라서 달라짐.
+    });
   });
+  
   res.redirect('/');
 });
 

@@ -11,7 +11,7 @@ const userSchema = new Schema({
   password : {
     type : String,
     required : true,
-    maxLength : 20,
+    maxLength : 100,
   },
   nickname : {
     type : String,
@@ -26,6 +26,10 @@ const userSchema = new Schema({
     type : String,
     ref : 'Club'
   },
+  studentNumber : {
+    type : String,
+    required : false,
+  }
 });
 
 module.exports = mongoose.model('User', userSchema);
