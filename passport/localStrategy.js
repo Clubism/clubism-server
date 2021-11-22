@@ -10,6 +10,7 @@ module.exports = ()=>{
     // 이 부분은 나중에 html form 부분에서 name field랑 맞춰야 함
   }, async(id, password, done)=>{
     try{
+      console.log('id : ', id, 'password :', password)
       const exUser = await User.findOne({id : id});
       console.log(exUser);
       if(exUser){ 
@@ -19,10 +20,10 @@ module.exports = ()=>{
           done(null, exUser);
         }
         else{ // 비밀번호 틀림
-          done(null, false, {message : 'Wrong password'});
+          done(null, false, {message : 'wrong password'});
         }
       }else{ // db 조회 실패 
-        done(null, false, {message : 'No such user exists'});
+        done(null, false, {message : 'No such user'});
       }
     }catch(error){
       console.error(error);
