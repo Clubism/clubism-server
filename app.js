@@ -9,6 +9,7 @@ const dotenv = require("dotenv").config();
 const passport = require("passport");
 const passportConfig = require("./passport");
 const connectDB = require("./schemas");
+const cors = require("cors");
 // middlewares
 
 const indexRouter = require("./routes");
@@ -29,7 +30,8 @@ const redisClient = redis.createClient({
   url: `redis://${process.env.REDIS_HOST}:${process.env.REDIS_PORT}`,
   password: process.env.REDIS_PASSWORD,
 });
-
+app.use(cors({ origin: "http://localhost:3000/" }));
+// app.use(cors());
 app.set("port", process.env.PORT || 4000);
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
@@ -74,5 +76,5 @@ app.use((err, req, res, next) => {
 });
 
 app.listen(app.get("port"), () => {
-  console.log("app is listening port", app.get("port"));
+  console.log("👌Express Server Running on PORT", app.get("port"));
 });
