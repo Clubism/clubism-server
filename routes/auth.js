@@ -12,19 +12,24 @@ router.get("/join", (req, res) => {
 
 router.post("/join", async (req, res) => {
   console.log(req.body);
-  console.log("test1");
+  // console.log("test1");
   const { username, id, password } = req.body;
   // const { username, id, password } = JSON.parse(req.body);
   // username, id, password를 가입할때 받는 것으로 가정.
-  console.log(username, id, password);
+  // console.log(username, id, password);
   bcrypt.hash(password, saltRounds, async (err, hashedPassword) => {
     // Store hash in your password DB.
-    await User.create({
-      username: username,
-      id: id,
-      password: hashedPassword,
-      // 이 부분은 회원가입 폼에 따라서 달라짐.
-    });
+    try {
+      await User.create({
+        username: username,
+        id: id,
+        password: hashedPassword,
+        // 이 부분은 회원가입 폼에 따라서 달라짐.
+      });
+    } catch (e) {
+      console.log("here!!!");
+      console.log(e);
+    }
   });
 
   res.redirect("/");
