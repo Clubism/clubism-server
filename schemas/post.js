@@ -22,6 +22,10 @@ const postSchema = new Schema({
   date : {
     type: Date, 
     default: Date.now
+  },
+  state: {
+    type : Boolean,
+    default : true,
   }
 });
 

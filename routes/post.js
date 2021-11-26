@@ -2,6 +2,10 @@ const express = require('express');
 const Post = require('../schemas/post');
 const router = express.Router();
 
+router.get('/', async(req, res)=>{
+  const posts = await Post.find()
+  res.json(posts);
+});
 
 router.post('/submit', async(req, res)=>{
   const {title, content, category} = req.body;
