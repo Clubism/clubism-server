@@ -10,7 +10,7 @@ module.exports = ()=>{
     // 이 부분은 나중에 html form 부분에서 name field랑 맞춰야 함
   }, async(id, password, done)=>{
     try{
-      console.log('id : ', id, 'password :', password)
+      
       const exUser = await User.findOne({id : id});
       console.log(exUser);
       if(exUser){ 

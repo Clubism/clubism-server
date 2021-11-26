@@ -6,6 +6,13 @@ const axios = require('axios');
 const router = express.Router();
 const saltRounds = 10;
 
+router.get('/userSession', (req, res)=>{
+  //console.log(req.session);
+  //console.log(req.session.isLoggedIn);
+  console.log(req.isAuthenticated());
+  return res.send({isLoggedIn : req.session.isLoggedIn});
+});
+
 router.get('/join', (req, res)=>{
   res.render('join');
 });
@@ -56,6 +63,9 @@ router.post('/login', (req, res, next)=>{
         console.error(loginError);
         return next(loginError);
       }
+      req.session.isLoggedIn = true;
+      req.session.name = user.id;
+      
       return res.send('login success');
     })
   })(req, res, next);
