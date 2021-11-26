@@ -82,5 +82,5 @@ app.use((err, req, res, next) => {
 });
 
 app.listen(app.get("port"), () => {
-  console.log("app is listening port", app.get("port"));
+  console.log("👌Express Server Running on PORT", app.get("port"));
 });
