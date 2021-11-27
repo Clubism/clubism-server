@@ -2,24 +2,24 @@ const mongoose = require('mongoose');
 
 const {Schema} = mongoose;
 
-var commentSchema = new Schema({
-  comment : {
-    type : String,
-  },
-  postNum : {
-    type : Number,
-  },
-  class : {
-    type : Number,
-  },
-  date : {
-    type : Date,
-    default : Date.now,
-  },
-  writer : {
-    type : String,
-  }
-});
+// const commentSchema = new Schema({
+//   comment : {
+//     type : String,
+//   },
+//   postNum : {
+//     type : Number,
+//   },
+//   class : {
+//     type : Number,
+//   },
+//   date : {
+//     type : Date,
+//     default : Date.now,
+//   },
+//   writer : {
+//     type : String,
+//   }
+// });
 
 const postSchema = new Schema({
   title : {
@@ -29,7 +29,7 @@ const postSchema = new Schema({
   content : {
     type : String,
   },
-  comment : commentSchema,
+  // comment : commentSchema,
   writer : {
     type : String,
   },
@@ -46,7 +46,8 @@ const postSchema = new Schema({
   },
   postNum : {
     type : Number,
-    default : 0,
+    index: true,
+    // default : 0,
   }
 });
 
