@@ -12,6 +12,7 @@
   "dependencies": {
     "axios": "^0.24.0",
     "bcrypt": "^5.0.1",
+    "code-point-at": "^2.0.0",
     "concurrently": "^6.2.1",
     "connect-redis": "^6.0.0",
     "cookie-parser": "^1.4.5",
@@ -20,6 +21,7 @@
     "express": "^4.17.1",
     "express-session": "^1.17.2",
     "kill-port": "^1.6.1",
+    "moment": "^2.29.1",
     "mongoose": "^5.13.7",
     "morgan": "^1.10.0",
     "nodemon": "^2.0.12",
