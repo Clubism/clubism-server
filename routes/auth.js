@@ -73,7 +73,7 @@ router.post("/login", (req, res, next) => {
       req.session.isLoggedIn = true;
       req.session.name = user.id;
       
-      return res.send('login success');
+      return res.send(user);
     })
   })(req, res, next);
 });
