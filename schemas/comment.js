@@ -14,10 +14,10 @@ const commentSchema = new Schema({
   parentComment: {
     type: String,
   },
-  // childComment : {
-  //     type: Array,
-  //     require: true,
-  // },
+  childComment : {
+      type: Array,
+      require: true,
+  },
   _class : {
     type : Number,
     require : true,

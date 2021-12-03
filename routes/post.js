@@ -1,6 +1,7 @@
 const express = require('express');
 const Post = require('../schemas/post');
 const Comment = require('../schemas/comment');
+// const ObjectID = require('mongodb').ObjectID;
 const router = express.Router();
 
 router.get('/', async(req, res)=>{
@@ -34,7 +35,7 @@ router.get('/comment/:id', async(req, res)=>{
 
   // 해당 id를 갖는 게시글에 대한 댓글 찾기
   const comments = await Comment.find({postNum : id});
-  // console.log(comments);
+  console.log(comments);
   // comments = comments.comment;
 
   // 댓글이 1도 안달렸을 때
@@ -60,31 +61,10 @@ router.post('/comment/:id', async(req, res)=>{
     parentComment : parentComment,
     _class : _class
   });
-  
+
   // // post submit success라고 프론트에 응답
   return res.send("post submit success");
 
 });
-
-// //대댓글
-// router.post('/recomment/:id', async(req, res)=>{
-//   const {comment, postNum, parentComment} = req.body;
-
-//   console.log("req", req.body);
-
-//     Comment.update(
-//         {_id:parentComment}, 
-//         {$push: {childComment: 
-//           {
-//             comment: comment,
-//             postNum: postNum,
-//             parentComment: parentComment
-//           }
-//         }
-//       }
-//     )
-
-//   return res.send("post submit success");
-// })
 
 module.exports = router;
