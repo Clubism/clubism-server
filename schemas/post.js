@@ -2,24 +2,6 @@ const mongoose = require('mongoose');
 
 const {Schema} = mongoose;
 
-// const commentSchema = new Schema({
-//   comment : {
-//     type : String,
-//   },
-//   postNum : {
-//     type : Number,
-//   },
-//   class : {
-//     type : Number,
-//   },
-//   date : {
-//     type : Date,
-//     default : Date.now,
-//   },
-//   writer : {
-//     type : String,
-//   }
-// });
 
 const postSchema = new Schema({
   title : {

@@ -34,7 +34,7 @@ router.get('/comment/:id', async(req, res)=>{
 
   // 해당 id를 갖는 게시글에 대한 댓글 찾기
   const comments = await Comment.find({postNum : id});
-  console.log(comments);
+  // console.log(comments);
   // comments = comments.comment;
 
   // 댓글이 1도 안달렸을 때
@@ -48,19 +48,43 @@ router.get('/comment/:id', async(req, res)=>{
 })
 
 
+//댓글
 router.post('/comment/:id', async(req, res)=>{
-  const {comment, postNum} = req.body;
+  const {comment, postNum, parentComment, _class} = req.body;
  
   console.log("body", req.body);
   // 객체로 만들고 post db에 추가
   await Comment.create({
     comment : comment,
     postNum : postNum,
+    parentComment : parentComment,
+    _class : _class
   });
   
   // // post submit success라고 프론트에 응답
-  // return res.send("post submit success");
+  return res.send("post submit success");
 
 });
+
+// //대댓글
+// router.post('/recomment/:id', async(req, res)=>{
+//   const {comment, postNum, parentComment} = req.body;
+
+//   console.log("req", req.body);
+
+//     Comment.update(
+//         {_id:parentComment}, 
+//         {$push: {childComment: 
+//           {
+//             comment: comment,
+//             postNum: postNum,
+//             parentComment: parentComment
+//           }
+//         }
+//       }
+//     )
+
+//   return res.send("post submit success");
+// })
 
 module.exports = router;
