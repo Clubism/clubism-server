@@ -12,7 +12,10 @@ const commentSchema = new Schema({
     require : true,
   },
   parentComment: {
-    type: String,
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'comments',
+    require: true,
+    default: this._id
   },
   childComment : {
       type: Array,

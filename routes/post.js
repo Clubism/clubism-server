@@ -1,7 +1,7 @@
 const express = require('express');
 const Post = require('../schemas/post');
 const Comment = require('../schemas/comment');
-// const ObjectID = require('mongodb').ObjectID;
+const ObjectID = require('mongodb').ObjectID;
 const router = express.Router();
 
 router.get('/', async(req, res)=>{
@@ -32,9 +32,11 @@ router.post('/submit', async(req, res)=>{
 router.get('/comment/:id', async(req, res)=>{
   // 게시글 id
   const id = req.params.id;
-
   // 해당 id를 갖는 게시글에 대한 댓글 찾기
-  const comments = await Comment.find({postNum : id});
+  const comments = await Comment
+      .find({postNum : id})
+      .sort({"parentComment":1});
+
   console.log(comments);
   // comments = comments.comment;
 
@@ -54,11 +56,13 @@ router.post('/comment/:id', async(req, res)=>{
   const {comment, postNum, parentComment, _class} = req.body;
  
   console.log("body", req.body);
+  // console.log("test", req);
   // 객체로 만들고 post db에 추가
+
   await Comment.create({
     comment : comment,
     postNum : postNum,
-    parentComment : parentComment,
+    parentComment : ObjectID(parentComment),
     _class : _class
   });
 
