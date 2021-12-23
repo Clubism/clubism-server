@@ -14,7 +14,7 @@ const cors = require("cors");
 
 const indexRouter = require("./routes");
 const authRouter = require("./routes/auth");
-const postRouter = require('./routes/post');
+const postRouter = require("./routes/post");
 // routers
 
 const app = express();
@@ -31,7 +31,11 @@ const redisClient = redis.createClient({
   url: `redis://${process.env.REDIS_HOST}:${process.env.REDIS_PORT}`,
   password: process.env.REDIS_PASSWORD,
 });
-app.use(cors());
+app.use(cors({
+  origin : true,
+  credentials : true
+}));
+
 app.set("port", process.env.PORT || 4000);
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
@@ -39,12 +43,14 @@ app.use(cookieParser(process.env.COOKIE_SECRET));
 app.use(
   session({
     resave: false,
-    saveUninitialized: false,
+    saveUninitialized: true,
     secret: process.env.COOKIE_SECRET,
     cookie: {
       httpOnly: true,
-      secure: false,
+      secure: true,
+      sameSite : 'none',
     },
+    //store : localStorage;
     store: new RedisStore({ client: redisClient }),
   })
 );

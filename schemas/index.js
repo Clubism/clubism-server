@@ -9,7 +9,7 @@ const connect = () => {
   // show mongoose queries only when not in a production environment
 
   const uri = process.env.ATLAS_URI;
-
+  
   mongoose.connect(
     uri,
     {

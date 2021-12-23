@@ -6,25 +6,37 @@ const axios = require("axios");
 const router = express.Router();
 const saltRounds = 10;
 
-router.get("/join", (req, res) => {
-  res.render("join");
+router.get('/userSession', (req, res)=>{
+  //console.log(req.session);
+  //console.log(req.session.isLoggedIn);
+  console.log(req.isAuthenticated());
+  return res.send({isLoggedIn : req.session.isLoggedIn});
+});
+
+router.get('/join', (req, res)=>{
+  res.render('join');
 });
 
 router.post("/join", async (req, res) => {
   console.log(req.body);
-  console.log("test1");
+  // console.log("test1");
   const { username, id, password } = req.body;
   // const { username, id, password } = JSON.parse(req.body);
   // username, id, password를 가입할때 받는 것으로 가정.
-  console.log(username, id, password);
+  // console.log(username, id, password);
   bcrypt.hash(password, saltRounds, async (err, hashedPassword) => {
     // Store hash in your password DB.
-    await User.create({
-      username: username,
-      id: id,
-      password: hashedPassword,
-      // 이 부분은 회원가입 폼에 따라서 달라짐.
-    });
+    try {
+      await User.create({
+        username: username,
+        id: id,
+        password: hashedPassword,
+        // 이 부분은 회원가입 폼에 따라서 달라짐.
+      });
+    } catch (e) {
+      console.log("here!!!");
+      console.log(e);
+    }
   });
 
   res.redirect("/");
@@ -58,8 +70,11 @@ router.post("/login", (req, res, next) => {
         console.error(loginError);
         return next(loginError);
       }
-      return res.send("login success");
-    });
+      req.session.isLoggedIn = true;
+      req.session.name = user.id;
+      
+      return res.send(user);
+    })
   })(req, res, next);
 });
 
