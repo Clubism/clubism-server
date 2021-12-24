@@ -43,7 +43,7 @@ router.get('/comment/:id', async(req, res)=>{
   
   });
   
-  module.exports = router;
+
 })
 
 router.post('/comment/:id', async(req, res)=>{
