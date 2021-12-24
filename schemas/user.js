@@ -29,7 +29,11 @@ const userSchema = new Schema({
   studentNumber : {
     type : String,
     required : false,
-  }
+  },
+  favorite : {
+    type : Array,
+    required : false,
+  },
 });
 
 module.exports = mongoose.model('User', userSchema);

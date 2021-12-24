@@ -84,4 +84,18 @@ router.get("/logout", async (req, res, next) => {
   res.redirect("/");
 });
 
+// 즐겨찾기 db에 추가
+router.post('/favorites/:userId', async(req, res)=>{
+  const userId = req.params.userId
+  const clubName = req.body;
+  const user = await User.find({_id : userId});
+  user.favorites.push(clubName);
+});
+
+// 즐겨찾기한 동아리 불러오기
+router.get('/favorites/:userId', async(req, res)=>{
+  const userId = req.params.userId
+  const user = await User.find({_id : userId});
+  res.json(user.favorites);
+});
 module.exports = router;

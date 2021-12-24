@@ -15,6 +15,7 @@ const cors = require("cors");
 const indexRouter = require("./routes");
 const authRouter = require("./routes/auth");
 const postRouter = require("./routes/post");
+const clubRouter = require('./routes/club');
 // routers
 
 const app = express();
@@ -66,6 +67,7 @@ if (process.env.NODE_ENV === "production") {
 app.use("/", indexRouter);
 app.use("/auth", authRouter);
 app.use("/post", postRouter);
+app.use('/mainClub', clubRouter);
 
 app.use((req, res, next) => {
   const error = new Error(`${req.method} ${req.url} 라우터가 없습니다`);

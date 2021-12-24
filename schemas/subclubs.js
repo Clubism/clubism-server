@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 
 const {Schema} = mongoose;
 
-const clubSchema = new Schema({
+const subclubSchema = new Schema({
   name : {
     type : String,
     required : true,
@@ -15,7 +15,7 @@ const clubSchema = new Schema({
     required : true,
   },
   label : {
-    type : String,
+    type : string,
     required : true
   },
   value : {
@@ -25,4 +25,4 @@ const clubSchema = new Schema({
 
 });
 
-module.exports = mongoose.model('Club', clubSchema);
+module.exports = mongoose.model('Subclub', subclubSchema);
