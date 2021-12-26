@@ -98,4 +98,11 @@ router.get('/favorites/:userId', async(req, res)=>{
   const user = await User.find({_id : userId});
   res.json(user.favorites);
 });
+
+// id 중복 확인
+router.get('/checkId', async(req, res)=>{
+  const id = req.query.id;
+  const user = await User.findOne({id : id});
+  res.json(user);
+});
 module.exports = router;
