@@ -14,6 +14,9 @@ const recruitmentSchema = new Schema({
   },
   deadline : {
     type : Date
+  },
+  type : {
+    type : String,
   }
 });
 
