@@ -11,7 +11,7 @@ router.get('/clubs', async(req, res)=>{
 
 // 공고 불러 오기
 router.get('/recruitment', async(req, res)=>{
-  const recruitments = await Recruitment.find({}).populate('clubId')
+  const recruitments = await Recruitment.find({type:"subClub"}).populate('clubId')
   /*
   recruitments.map((r)=>{
     console.log(r);
