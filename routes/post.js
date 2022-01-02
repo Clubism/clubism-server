@@ -21,6 +21,7 @@ router.post('/submit', async(req, res)=>{
     content : content,
     category : category,
     postNum : postNum,
+    id : id
   });
   
   // post submit success라고 프론트에 응답
