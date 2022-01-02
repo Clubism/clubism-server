@@ -13,7 +13,7 @@ const userSchema = new Schema({
     required : true,
     maxLength : 100,
   },
-  nickname : {
+  username : {
     type : String,
     required : false,
     maxLength : 10,
@@ -31,6 +31,14 @@ const userSchema = new Schema({
     required : false,
   },
   favorite : [String],
+  major : {
+    type : String,
+    required : false,
+  },
+  subMajor : {
+    type : String,
+    requied : false,
+  },
 });
 
 module.exports = mongoose.model('User', userSchema);

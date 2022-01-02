@@ -2,9 +2,51 @@ const express = require("express");
 const passport = require("passport");
 const User = require("../schemas/user");
 const bcrypt = require("bcrypt");
-const axios = require("axios");
+const jwt = require('jsonwebtoken');
 const router = express.Router();
 const saltRounds = 10;
+
+const SECRET_KEY = process.env.JWT_SECRET;
+
+router.post('/token', async(req, res)=>{
+  // request에서 body로 clientSecret이 담겨서 와야 함
+  const {clientSecret} = req.body;
+
+  try{
+  // query param으로 id를 넣음
+    const id = req.query.id;
+
+    const user = await User.findOne({id : id});
+
+    const token = jwt.sign({
+      id : id,
+    }, process.env.JWT_SECRET, {
+      expiresIn : '1m',
+      issuer : 'clubism'
+    });
+    return res.json({
+      code : 200,
+      message : "token is issued",
+      token,
+    });
+  }catch(err){
+    console.error(err);
+    return res.status(500).json({
+      code : 500,
+      messsage : "server error",
+    });
+  }
+});
+
+router.post('/test', passport.authenticate('jwt', { session: false }),
+	async (req, res, next) => {
+	  try {
+	    res.json({ result: true });
+	  } catch (error) {
+	    console.error(error);
+	    next(error);
+	  }
+});
 
 router.get('/userSession', (req, res)=>{
   //console.log(req.session);
@@ -47,7 +89,7 @@ router.get("/login", (req, res) => {
 });
 
 router.post("/login", (req, res, next) => {
-  passport.authenticate("local", (authError, user, info) => {
+  passport.authenticate("local", {session : false}, (authError, user, info) => {
     // local 로그인 인증
     if (authError) {
       console.error(authError);
@@ -64,16 +106,32 @@ router.post("/login", (req, res, next) => {
       // 이 부분은 info.message에 따라 다르게 구현할 예정
       // 일단은 리디렉션 시킴
     }
-    req.logIn(user, (loginError) => {
+    req.logIn(user, {session : false}, (loginError) => {
       if (loginError) {
         res.send("login error");
         console.error(loginError);
         return next(loginError);
       }
-      req.session.isLoggedIn = true;
-      req.session.name = user.id;
-      
-      return res.send(user);
+
+      try {
+        const token = jwt.sign({
+          id : user.id
+          }, SECRET_KEY, {
+          expiresIn: '1h'
+        });
+          /*
+          res.cookie('user', token);
+          res.status(201).json({
+            result: 'ok',
+            token
+          });
+        */
+        //return res.json({ user, token });
+        return res.status(201).send({user, token});
+      } catch (err) {
+        console.error(err);
+        next(err);
+      }
     })
   })(req, res, next);
 });
@@ -106,3 +164,4 @@ router.get('/checkId', async(req, res)=>{
   res.json(user);
 });
 module.exports = router;
+
