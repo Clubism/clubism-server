@@ -15,7 +15,7 @@ const subclubSchema = new Schema({
     required : true,
   },
   label : {
-    type : string,
+    type : String,
     required : true
   },
   value : {

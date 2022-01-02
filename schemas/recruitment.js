@@ -15,6 +15,12 @@ const recruitmentSchema = new Schema({
   deadline: {
     type: Date,
   },
+  deadline : {
+    type : Date
+  },
+  type : {
+    type : String,
+  }
 });
 
 module.exports = mongoose.model("Recruitment", recruitmentSchema);
