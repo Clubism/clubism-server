@@ -13,7 +13,7 @@ router.get('/', async(req, res)=>{
 
 router.post('/submit', async(req, res)=>{
   // req의 body에서 넘어온 data를 구조할당 분해
-  const {title, content, category, postNum} = req.body;
+  const {title, content, category, postNum, id} = req.body;
  
   // 객체로 만들고 post db에 추가
   await Post.create({

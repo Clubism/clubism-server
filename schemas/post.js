@@ -13,7 +13,6 @@ const postSchema = new Schema({
   content : {
     type : String,
   },
-  // comment : commentSchema,
   writer : {
     type : String,
   },
@@ -31,10 +30,10 @@ const postSchema = new Schema({
   postNum : {
     type : Number,
     index: true,
-    // default : 0,
   },
   id: {
-    type: Number
+    type: Number,
+    required : true,
   }
 });
 
