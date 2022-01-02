@@ -73,7 +73,7 @@ router.post("/login", (req, res, next) => {
       req.session.isLoggedIn = true;
       req.session.name = user.id;
       
-      return res.send('login success');
+      return res.send(user);
     })
   })(req, res, next);
 });
@@ -84,4 +84,25 @@ router.get("/logout", async (req, res, next) => {
   res.redirect("/");
 });
 
+// 즐겨찾기 db에 추가
+router.post('/favorites/:userId', async(req, res)=>{
+  const userId = req.params.userId
+  const clubName = req.body;
+  const user = await User.find({_id : userId});
+  user.favorites.push(clubName);
+});
+
+// 즐겨찾기한 동아리 불러오기
+router.get('/favorites/:userId', async(req, res)=>{
+  const userId = req.params.userId
+  const user = await User.find({_id : userId});
+  res.json(user.favorites);
+});
+
+// id 중복 확인
+router.get('/checkId', async(req, res)=>{
+  const id = req.query.id;
+  const user = await User.findOne({id : id});
+  res.json(user);
+});
 module.exports = router;
