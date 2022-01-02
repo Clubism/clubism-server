@@ -15,6 +15,9 @@ const cors = require("cors");
 const indexRouter = require("./routes");
 const authRouter = require("./routes/auth");
 const postRouter = require("./routes/post");
+const mainClubRouter = require('./routes/mainClub');
+const subClubRouter = require('./routes/subclub');
+const recruitmentRouer = require('./routes/recruitment');
 // routers
 
 const app = express();
@@ -35,6 +38,7 @@ app.use(cors({
   origin : true,
   credentials : true
 }));
+
 app.set("port", process.env.PORT || 4000);
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
@@ -65,6 +69,9 @@ if (process.env.NODE_ENV === "production") {
 app.use("/", indexRouter);
 app.use("/auth", authRouter);
 app.use("/post", postRouter);
+app.use('/mainClub', mainClubRouter);
+app.use('/subClub', subClubRouter);
+app.use("/recruitment", recruitmentRouer);
 
 app.use((req, res, next) => {
   const error = new Error(`${req.method} ${req.url} 라우터가 없습니다`);
