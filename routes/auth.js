@@ -162,16 +162,25 @@ router.get("/logout", async (req, res, next) => {
 // 즐겨찾기 db에 추가
 router.post("/favorites/:userId", async (req, res) => {
   const userId = req.params.userId;
-  const clubName = req.body;
-  const user = await User.find({ _id: userId });
-  user.favorites.push(clubName);
+  const clubName = req.body.clubName;
+  await User.updateOne(
+    { _id: userId },
+    { $addToSet: { favorite: clubName } }
+    // {
+    //   $push: {favorite : clubName}
+    // });
+  );
+
+  const favs = await User.findOne({_id : userId});
+    res.send(favs.favorite);
 });
 
 // 즐겨찾기한 동아리 불러오기
 router.get("/favorites/:userId", async (req, res) => {
   const userId = req.params.userId;
-  const user = await User.find({ _id: userId });
-  res.json(user.favorites);
+  const user = await User.findOne({ _id: userId });
+ 
+  res.json(user.favorite);
 });
 
 // id 중복 확인
