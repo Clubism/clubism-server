@@ -4,39 +4,13 @@ const Comment = require("../schemas/comment");
 const ObjectID = require("mongodb").ObjectID;
 const router = express.Router();
 
-<<<<<<< HEAD
-router.get('/', async(req, res)=>{
-  const posts = await Post.find().sort({"date" : -1})
-  res.json(posts);
-});
-
-
-router.get('/indexPost', async(req, res)=>{
-  // 날짜 내림차순으로 게시글을 db에서 얻어옴
-  const posts = await Post.find().sort({"date" : -1}).limit(7);
-=======
 router.get("/", async (req, res) => {
   // 날짜 내림차순으로 게시글을 db에서 얻어옴
   const posts = await Post.find().sort({ date: -1 });
->>>>>>> 9588c362bb827d5d5783aee5c72a08bb92b75100
 
   res.json(posts);
 });
 
-<<<<<<< HEAD
-
-router.post('/submit', async(req, res)=>{
-  // req의 body에서 넘어온 data를 구조할당 분해
-  const {title, content, category, postNum, id} = req.body;
- 
-  // 객체로 만들고 post db에 추가
-  await Post.create({
-    title : title,
-    content : content,
-    category : category,
-    postNum : postNum,
-    id : id
-=======
 router.get("/indexPost", async (req, res) => {
   // 날짜 내림차순으로 게시글을 db에서 얻어옴
   const posts = await Post.find().sort({ date: -1 }).limit(7);
@@ -54,7 +28,6 @@ router.post("/submit", async (req, res) => {
     content: content,
     category: category,
     postNum: postNum,
->>>>>>> 9588c362bb827d5d5783aee5c72a08bb92b75100
   });
 
   // post submit success라고 프론트에 응답

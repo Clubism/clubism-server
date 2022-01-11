@@ -97,28 +97,6 @@ router.get("/login", (req, res) => {
   res.render("login");
 });
 
-<<<<<<< HEAD
-router.post("/login", async(req, res, next) => {
-  passport.authenticate("local", {session : false}, (authError, user, info) => {
-    // local 로그인 인증
-    if (authError) {
-      console.error(authError);
-      res.send("login error");
-      return next(authError);
-    }
-    if (!user) {
-      if (info.message === "No such user") {
-        return res.send("no such user");
-      } else if (info.message === "wrong password") {
-        return res.send("wrong password");
-      }
-      return res.send("login error");
-      // 이 부분은 info.message에 따라 다르게 구현할 예정
-      // 일단은 리디렉션 시킴
-    }
-    req.logIn(user, {session : false}, (loginError) => {
-      if (loginError) {
-=======
 router.post("/login", (req, res, next) => {
   passport.authenticate(
     "local",
@@ -127,21 +105,9 @@ router.post("/login", (req, res, next) => {
       // local 로그인 인증
       if (authError) {
         console.error(authError);
->>>>>>> 9588c362bb827d5d5783aee5c72a08bb92b75100
         res.send("login error");
         return next(authError);
       }
-<<<<<<< HEAD
-
-      try {
-        const token = jwt.sign({
-          id : user.id
-          }, SECRET_KEY, {
-          expiresIn: '1h'
-        });
-
-        console.log("login success until here");
-=======
       if (!user) {
         if (info.message === "No such user") {
           return res.send("no such user");
@@ -169,7 +135,6 @@ router.post("/login", (req, res, next) => {
               expiresIn: "1h",
             }
           );
->>>>>>> 9588c362bb827d5d5783aee5c72a08bb92b75100
           /*
           res.cookie('user', token);
           res.status(201).json({
