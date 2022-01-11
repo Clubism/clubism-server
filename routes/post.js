@@ -5,11 +5,18 @@ const ObjectID = require('mongodb').ObjectID;
 const router = express.Router();
 
 router.get('/', async(req, res)=>{
-  // 날짜 내림차순으로 게시글을 db에서 얻어옴
   const posts = await Post.find().sort({"date" : -1})
+  res.json(posts);
+});
+
+
+router.get('/indexPost', async(req, res)=>{
+  // 날짜 내림차순으로 게시글을 db에서 얻어옴
+  const posts = await Post.find().sort({"date" : -1}).limit(7);
 
   res.json(posts);
 });
+
 
 router.post('/submit', async(req, res)=>{
   // req의 body에서 넘어온 data를 구조할당 분해

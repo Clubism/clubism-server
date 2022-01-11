@@ -10,7 +10,6 @@ module.exports = ()=>{
     // 이 부분은 나중에 html form 부분에서 name field랑 맞춰야 함
   }, async(id, password, done)=>{
     try{
-      
       const exUser = await User.findOne({id : id});
       console.log(exUser);
       if(exUser){ 
@@ -25,6 +24,7 @@ module.exports = ()=>{
       }else{ // db 조회 실패 
         done(null, false, {message : 'No such user'});
       }
+      
     }catch(error){
       console.error(error);
       done(error);

@@ -88,7 +88,7 @@ router.get("/login", (req, res) => {
   res.render("login");
 });
 
-router.post("/login", (req, res, next) => {
+router.post("/login", async(req, res, next) => {
   passport.authenticate("local", {session : false}, (authError, user, info) => {
     // local 로그인 인증
     if (authError) {
@@ -119,6 +119,8 @@ router.post("/login", (req, res, next) => {
           }, SECRET_KEY, {
           expiresIn: '1h'
         });
+
+        console.log("login success until here");
           /*
           res.cookie('user', token);
           res.status(201).json({
