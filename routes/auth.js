@@ -164,7 +164,13 @@ router.get("/logout", async (req, res, next) => {
 router.post("/favorites/:userId", async (req, res) => {
   const userId = req.params.userId;
   const clubName = req.body.clubName;
-  await User.updateOne({ _id: userId }, { $addToSet: { favorites: clubName } });
+  await User.updateOne(
+    { _id: userId },
+    { $addToSet: { favorites: clubName } }
+    // {
+    //   $push: {favorite : clubName}
+    // });
+  );
 
   const favs = await User.findOne({ _id: userId });
   res.send(favs.favorites);
@@ -213,7 +219,7 @@ router.post("/emailVerification", async (req, res) => {
 
   // 나중에 클라이언트 단에선 안보이게 처리해야 함
   // 왜냐면 그냥 아무 메일이나 쓰고 개발자 도구에서 확인할 수 있으니깐
-  
+
   res.send({
     code: code,
   });

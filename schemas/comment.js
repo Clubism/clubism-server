@@ -17,10 +17,6 @@ const commentSchema = new Schema({
     require: true,
     default: this._id
   },
-  childComment : {
-      type: Array,
-      require: true,
-  },
   _class : {
     type : Number,
     require : true,
