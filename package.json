@@ -25,6 +25,7 @@
     "moment": "^2.29.1",
     "mongoose": "^5.13.7",
     "morgan": "^1.10.0",
+    "node-mailer": "^0.1.1",
     "nodemon": "^2.0.12",
     "nunjucks": "^3.2.3",
     "passport": "^0.4.1",

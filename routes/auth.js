@@ -4,10 +4,11 @@ const User = require("../schemas/user");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const router = express.Router();
+const { smtpTransport } = require("../middlewares/nodemailer");
 const saltRounds = 10;
 
 const SECRET_KEY = process.env.JWT_SECRET;
-
+/*
 router.post("/token", async (req, res) => {
   // request에서 body로 clientSecret이 담겨서 와야 함
   const { clientSecret } = req.body;
@@ -41,7 +42,7 @@ router.post("/token", async (req, res) => {
     });
   }
 });
-
+*/
 router.post(
   "/test",
   passport.authenticate("jwt", { session: false }),
@@ -162,15 +163,17 @@ router.get("/logout", async (req, res, next) => {
 // 즐겨찾기 db에 추가
 router.post("/favorites/:userId", async (req, res) => {
   const userId = req.params.userId;
-  const clubName = req.body;
-  const user = await User.find({ _id: userId });
-  user.favorites.push(clubName);
-});
+  const clubName = req.body.clubName;
+  await User.updateOne({ _id: userId }, { $addToSet: { favorites: clubName } });
 
+  const favs = await User.findOne({ _id: userId });
+  res.send(favs.favorites);
+});
 // 즐겨찾기한 동아리 불러오기
 router.get("/favorites/:userId", async (req, res) => {
   const userId = req.params.userId;
-  const user = await User.find({ _id: userId });
+  const user = await User.findOne({ _id: userId });
+
   res.json(user.favorites);
 });
 
@@ -179,5 +182,40 @@ router.get("/checkId", async (req, res) => {
   const id = req.query.id;
   const user = await User.findOne({ id: id });
   res.json(user);
+});
+
+// 인증번호 발급을 위해 임의의 6자리 숫자를 생성
+const generateRandom = function (min, max) {
+  var ranNum = Math.floor(Math.random() * (max - min + 1)) + min;
+  return ranNum;
+};
+
+// 이메일 인증 라우터
+router.post("/emailVerification", async (req, res) => {
+  const { sendEmail } = req.body;
+
+  const code = generateRandom(111111, 999999);
+
+  const mailOptions = {
+    from: "clubism",
+    to: sendEmail,
+    subject: "[clubism] 인증 번호 입력",
+    text: "오른쪽 숫자 6자리를 입력해주세요 : " + code,
+  };
+
+  await smtpTransport.sendMail(mailOptions, (err, res) => {
+    smtpTransport.close();
+    if (err) {
+      console.error(err);
+    }
+  });
+  console.log("here");
+
+  // 나중에 클라이언트 단에선 안보이게 처리해야 함
+  // 왜냐면 그냥 아무 메일이나 쓰고 개발자 도구에서 확인할 수 있으니깐
+  
+  res.send({
+    code: code,
+  });
 });
 module.exports = router;
