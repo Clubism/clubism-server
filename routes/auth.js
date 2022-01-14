@@ -72,7 +72,7 @@ router.get("/join", (req, res) => {
 router.post("/join", async (req, res) => {
   console.log(req.body);
   // console.log("test1");
-  const { username, id, password } = req.body;
+  const { username, id, password, favorites, major, subMajor, emailNotification, emailSogang } = req.body;
   // const { username, id, password } = JSON.parse(req.body);
   // username, id, password를 가입할때 받는 것으로 가정.
   // console.log(username, id, password);
@@ -83,6 +83,11 @@ router.post("/join", async (req, res) => {
         username: username,
         id: id,
         password: hashedPassword,
+        favorites : favorites,
+        major : major,
+        subMajor : subMajor,
+        emailNotification : emailNotification, 
+        emailSogang : emailSogang,
         // 이 부분은 회원가입 폼에 따라서 달라짐.
       });
     } catch (e) {
