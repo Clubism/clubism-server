@@ -1,25 +1,9 @@
 const mongoose = require('mongoose');
 
 const {Schema} = mongoose;
+const autoIncrement = require("mongoose-auto-increment");
 
-// const commentSchema = new Schema({
-//   comment : {
-//     type : String,
-//   },
-//   postNum : {
-//     type : Number,
-//   },
-//   class : {
-//     type : Number,
-//   },
-//   date : {
-//     type : Date,
-//     default : Date.now,
-//   },
-//   writer : {
-//     type : String,
-//   }
-// });
+autoIncrement.initialize(mongoose.connection);
 
 const postSchema = new Schema({
   title : {
@@ -29,7 +13,6 @@ const postSchema = new Schema({
   content : {
     type : String,
   },
-  // comment : commentSchema,
   writer : {
     type : String,
   },
@@ -47,8 +30,19 @@ const postSchema = new Schema({
   postNum : {
     type : Number,
     index: true,
-    // default : 0,
+  },
+  id: {
+    type: Number,
+    required : true,
   }
 });
+
+postSchema.plugin(autoIncrement.plugin, {
+  model: 'Post',
+  field: 'id',
+  startAt: 0,
+  increment: 1
+});
+
 
 module.exports = mongoose.model('Post', postSchema);

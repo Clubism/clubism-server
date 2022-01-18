@@ -1,26 +1,36 @@
 const express = require("express");
 const router = express.Router();
-
+const passport = require('passport');
 const Recruitment = require("../schemas/recruitment");
+const RecruitSub = require('../schemas/recruitSub');
 const Club = require('../schemas/club');
 const SubClub = require('../schemas/subclubs');
 
-router.post("/post", async(req, res)=>{
+router.post("/post", passport.authenticate("jwt", { session: false }), async(req, res)=>{
   const {type, club, clubName, description, deadline} = req.body;
-  var clubId = "";
+  
+  console.log(req.body);
+  
 
   if(type === 'mainClub'){
-    clubId = await Club.find({name : club});    
-  }
-  else{
-    clubId = await SubClub.find({name : clubName});
-  }
-  await Recruitment.create({
-      clubId : clubId._id,
+    const dbClub = await Club.findOne({name : club});    
+    console.log('dbClub : ', dbClub);
+    await Recruitment.create({
+      clubId : dbClub._id,
       description : description,
       deadline : deadline,
-      type : type,
     });
+  }
+  else{
+    const dbClub = await SubClub.findOne({name : clubName});
+    console.log('dbClub : ', dbClub);
+    await RecruitSub.create({
+      clubId : dbClub._id,
+      description : description,
+      deadline : deadline,
+    });
+  }
+  
   
 
   res.send("ok");

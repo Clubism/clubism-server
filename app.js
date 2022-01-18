@@ -15,9 +15,9 @@ const cors = require("cors");
 const indexRouter = require("./routes");
 const authRouter = require("./routes/auth");
 const postRouter = require("./routes/post");
-const mainClubRouter = require('./routes/mainClub');
-const subClubRouter = require('./routes/subclub');
-const recruitmentRouer = require('./routes/recruitment');
+const mainClubRouter = require("./routes/mainClub");
+const subClubRouter = require("./routes/subclub");
+const recruitmentRouer = require("./routes/recruitment");
 // routers
 
 const app = express();
@@ -35,9 +35,10 @@ const redisClient = redis.createClient({
   password: process.env.REDIS_PASSWORD,
 });
 app.use(cors({
-  origin : true,
-  credentials : true
-}));
+    origin: true,
+    credentials: true,
+  })
+);
 
 app.set("port", process.env.PORT || 4000);
 app.use(express.json());
@@ -51,14 +52,14 @@ app.use(
     cookie: {
       httpOnly: true,
       secure: true,
-      sameSite : 'none',
+      sameSite: "none",
     },
     //store : localStorage;
     store: new RedisStore({ client: redisClient }),
   })
 );
 app.use(passport.initialize());
-app.use(passport.session());
+//app.use(passport.session());
 
 if (process.env.NODE_ENV === "production") {
   app.use(morgan("combined"));
@@ -69,8 +70,8 @@ if (process.env.NODE_ENV === "production") {
 app.use("/", indexRouter);
 app.use("/auth", authRouter);
 app.use("/post", postRouter);
-app.use('/mainClub', mainClubRouter);
-app.use('/subClub', subClubRouter);
+app.use("/mainClub", mainClubRouter);
+app.use("/subClub", subClubRouter);
 app.use("/recruitment", recruitmentRouer);
 
 app.use((req, res, next) => {

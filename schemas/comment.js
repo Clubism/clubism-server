@@ -11,8 +11,15 @@ const commentSchema = new Schema({
     ref : 'Post',
     require : true,
   },
-  class : {
+  parentComment: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'comments',
+    require: true,
+    default: this._id
+  },
+  _class : {
     type : Number,
+    require : true,
     default : 0,
   },
   date : {
@@ -21,8 +28,9 @@ const commentSchema = new Schema({
   },
   writer : {
     type : String,
-  }
-});
+  },
+}
+);
 
 
 module.exports = mongoose.model('Comment', commentSchema);
