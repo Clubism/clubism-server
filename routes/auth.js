@@ -9,6 +9,7 @@ const saltRounds = 10;
 
 const SECRET_KEY = process.env.JWT_SECRET;
 
+<<<<<<< HEAD
 // access token이 만료됐을 경우
 router.post("/refresh", passport.authenticate("jwt", { session: false }), async(req, res)=>{
   async (req, res, next) => {
@@ -23,6 +24,22 @@ router.post("/refresh", passport.authenticate("jwt", { session: false }), async(
 }); 
 
 // access token을 verify하는 함수
+=======
+// access token이 만료된 경우 refresh token을 검증한 후 새로운 access token 발급
+router.get('/refresh', passport.authenticate("jwt", { session: false }), async (req, res, next) => {
+  // refresh token 검증이 완료되면
+  try {
+    // access token 발급
+    const accessToken = jwt.sign({id: req.user.id,}, SECRET_KEY, {expiresIn: "1h",});
+    return res.status(201).send({ accessToken });
+  }
+  catch (err) {
+  console.error(err);
+    next(err);
+  }
+});
+
+>>>>>>> 38788d291546ddc6141a83cd1426ffb37ff85a95
 router.post("/test", passport.authenticate("jwt", { session: false }),
   async (req, res, next) => {
     //jwtDecode(req.authorization);
@@ -36,7 +53,11 @@ router.post("/test", passport.authenticate("jwt", { session: false }),
   }
 );
 
+<<<<<<< HEAD
 router.get("/userSession",  (req, res) => {
+=======
+router.get("/userSession", passport.authenticate("jwt", { session: false }), (req, res) => {
+>>>>>>> 38788d291546ddc6141a83cd1426ffb37ff85a95
   //console.log(req.session);
   //console.log(req.session.isLoggedIn);
   console.log(req.isAuthenticated());
@@ -74,6 +95,7 @@ router.post("/join", async (req, res) => {
     }
   });
 
+  console.log("join success");
   res.redirect("/");
 });
 
@@ -107,8 +129,23 @@ router.post("/login", (req, res, next) => {
         }
 
         try {
+<<<<<<< HEAD
           const accessToken = jwt.sign({id: user.id,},SECRET_KEY,{expiresIn: "1h",});
           const refreshToken = jwt.sign({ id: user.id, username: user.username }, SECRET_KEY, { expiresIn: '14d' });
+=======
+          // access token 발급
+          const accessToken = jwt.sign({ id: user.id, }, SECRET_KEY, { expiresIn: "10s", });
+          // refresh token 밝브
+          const refreshToken = jwt.sign({}, SECRET_KEY, {expiresIn: "14d",});
+          /*
+          res.cookie('user', token);
+          res.status(201).json({
+            result: 'ok',
+            token
+          });
+        */
+          //return res.json({ user, token });
+>>>>>>> 38788d291546ddc6141a83cd1426ffb37ff85a95
           return res.status(201).send({ user, accessToken, refreshToken });
         } catch (err) {
           console.error(err);
@@ -119,15 +156,23 @@ router.post("/login", (req, res, next) => {
   )(req, res, next);
 });
 
+<<<<<<< HEAD
 router.get("/logout",async (req, res, next) => {
+=======
+router.get("/logout", passport.authenticate("jwt", { session: false }), async (req, res, next) => {
+>>>>>>> 38788d291546ddc6141a83cd1426ffb37ff85a95
   req.logOut();
   req.session.destroy();
   res.redirect("/");
 });
 
 // 즐겨찾기 db에 추가
+<<<<<<< HEAD
 router.post("/favorites/:userId", async (req, res) => {
 
+=======
+router.post("/favorites/:userId", passport.authenticate("jwt", { session: false }), async (req, res) => {
+>>>>>>> 38788d291546ddc6141a83cd1426ffb37ff85a95
   const userId = req.params.userId;
   const clubName = req.body.clubName;
   await User.updateOne(
@@ -141,7 +186,7 @@ router.post("/favorites/:userId", async (req, res) => {
   res.send(favs.favorites);
 });
 // 즐겨찾기한 동아리 불러오기
-router.get("/favorites/:userId", async (req, res) => {
+router.get("/favorites/:userId", passport.authenticate("jwt", { session: false }), passport.authenticate("jwt", { session: false }), async (req, res) => {
   const userId = req.params.userId;
   console.log("userId : ", userId);
   const user = await User.findOne({ _id: userId });
@@ -150,7 +195,7 @@ router.get("/favorites/:userId", async (req, res) => {
 });
 
 // id 중복 확인
-router.get("/checkId", async (req, res) => {
+router.get("/checkId", passport.authenticate("jwt", { session: false }), async (req, res) => {
   const id = req.query.id;
   const user = await User.findOne({ id: id });
   res.json(user);

@@ -2,23 +2,24 @@ const express = require("express");
 const Post = require("../schemas/post");
 const Comment = require("../schemas/comment");
 const ObjectID = require("mongodb").ObjectID;
+const passport = require('passport');
 const router = express.Router();
 
-router.get("/", async (req, res) => {
+router.get("/", passport.authenticate("jwt", { session: false }), async (req, res) => {
   // 날짜 내림차순으로 게시글을 db에서 얻어옴
   const posts = await Post.find().sort({ date: -1 });
 
   res.json(posts);
 });
 
-router.get("/indexPost", async (req, res) => {
+router.get("/indexPost", passport.authenticate("jwt", { session: false }), async (req, res) => {
   // 날짜 내림차순으로 게시글을 db에서 얻어옴
   const posts = await Post.find().sort({ date: -1 }).limit(7);
 
   res.json(posts);
 });
 
-router.post("/submit", async (req, res) => {
+router.post("/submit", passport.authenticate("jwt", { session: false }), async (req, res) => {
   // req의 body에서 넘어온 data를 구조할당 분해
   const { title, content, category, postNum } = req.body;
 
@@ -35,7 +36,7 @@ router.post("/submit", async (req, res) => {
 });
 
 //프론트에서 백으로 특정 게시물에 대한 댓글들을 요청했을 때
-router.get("/comment/:id", async (req, res) => {
+router.get("/comment/:id", passport.authenticate("jwt", { session: false }), async (req, res) => {
   // 게시글 id
   const id = req.params.id;
   // 해당 id를 갖는 게시글에 대한 댓글 찾기
@@ -57,7 +58,7 @@ router.get("/comment/:id", async (req, res) => {
 });
 
 //댓글
-router.post("/comment/:id", async (req, res) => {
+router.post("/comment/:id", passport.authenticate("jwt", { session: false }), async (req, res) => {
   const { comment, postNum, parentComment, _class } = req.body;
 
   console.log("body", req.body);
