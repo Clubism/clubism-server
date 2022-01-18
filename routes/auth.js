@@ -8,48 +8,26 @@ const { smtpTransport } = require("../middlewares/nodemailer");
 const saltRounds = 10;
 
 const SECRET_KEY = process.env.JWT_SECRET;
-/*
-router.post("/token", async (req, res) => {
-  // request에서 body로 clientSecret이 담겨서 와야 함
-  const { clientSecret } = req.body;
 
-  try {
-    // query param으로 id를 넣음
-    const id = req.query.id;
-
-    const user = await User.findOne({ id: id });
-
-    const token = jwt.sign(
-      {
-        id: id,
-      },
-      process.env.JWT_SECRET,
-      {
-        expiresIn: "1m",
-        issuer: "clubism",
-      }
-    );
-    return res.json({
-      code: 200,
-      message: "token is issued",
-      token,
-    });
-  } catch (err) {
-    console.error(err);
-    return res.status(500).json({
-      code: 500,
-      messsage: "server error",
-    });
-  }
-});
-*/
-router.post(
-  "/test",
-  passport.authenticate("jwt", { session: false }),
+// access token이 만료됐을 경우
+router.post("/refresh", passport.authenticate("jwt", { session: false }), async(req, res)=>{
   async (req, res, next) => {
     try {
-      console.log("Reached");
-      return res.json({ result: true });
+      const accessToken = jwt.sign({ id: req.user.id, }, SECRET_KEY, { expiresIn: "1h", });
+      return res.status(201).send({ user, accessToken});
+    } catch (error) {
+      console.error(error);
+      next(error);
+    }
+  }
+}); 
+
+// access token을 verify하는 함수
+router.post("/test", passport.authenticate("jwt", { session: false }),
+  async (req, res, next) => {
+    //jwtDecode(req.authorization);
+    try {
+      return res.json({ ok: true });
     } catch (error) {
       console.log("here");
       console.error(error);
@@ -58,7 +36,7 @@ router.post(
   }
 );
 
-router.get("/userSession", (req, res) => {
+router.get("/userSession",  (req, res) => {
   //console.log(req.session);
   //console.log(req.session.isLoggedIn);
   console.log(req.isAuthenticated());
@@ -104,10 +82,7 @@ router.get("/login", (req, res) => {
 });
 
 router.post("/login", (req, res, next) => {
-  passport.authenticate(
-    "local",
-    { session: false },
-    (authError, user, info) => {
+  passport.authenticate("local", { session: false }, (authError, user, info) => {
       // local 로그인 인증
       if (authError) {
         console.error(authError);
@@ -132,24 +107,9 @@ router.post("/login", (req, res, next) => {
         }
 
         try {
-          const token = jwt.sign(
-            {
-              id: user.id,
-            },
-            SECRET_KEY,
-            {
-              expiresIn: "1h",
-            }
-          );
-          /*
-          res.cookie('user', token);
-          res.status(201).json({
-            result: 'ok',
-            token
-          });
-        */
-          //return res.json({ user, token });
-          return res.status(201).send({ user, token });
+          const accessToken = jwt.sign({id: user.id,},SECRET_KEY,{expiresIn: "1h",});
+          const refreshToken = jwt.sign({ id: user.id, username: user.username }, SECRET_KEY, { expiresIn: '14d' });
+          return res.status(201).send({ user, accessToken, refreshToken });
         } catch (err) {
           console.error(err);
           next(err);
@@ -159,7 +119,7 @@ router.post("/login", (req, res, next) => {
   )(req, res, next);
 });
 
-router.get("/logout", async (req, res, next) => {
+router.get("/logout",async (req, res, next) => {
   req.logOut();
   req.session.destroy();
   res.redirect("/");
@@ -167,22 +127,23 @@ router.get("/logout", async (req, res, next) => {
 
 // 즐겨찾기 db에 추가
 router.post("/favorites/:userId", async (req, res) => {
+
   const userId = req.params.userId;
   const clubName = req.body.clubName;
   await User.updateOne(
     { _id: userId },
-    { $addToSet: { favorites: clubName } }
+    { $addToSet: { favorites: clubName }}
     // {
     //   $push: {favorite : clubName}
     // });
   );
-
   const favs = await User.findOne({ _id: userId });
   res.send(favs.favorites);
 });
 // 즐겨찾기한 동아리 불러오기
 router.get("/favorites/:userId", async (req, res) => {
   const userId = req.params.userId;
+  console.log("userId : ", userId);
   const user = await User.findOne({ _id: userId });
 
   res.json(user.favorites);
@@ -202,7 +163,7 @@ const generateRandom = function (min, max) {
 };
 
 // 이메일 인증 라우터
-router.post("/emailVerification", async (req, res) => {
+router.post("/emailVerification", passport.authenticate("jwt", { session: false }), async (req, res) => {
   const { sendEmail } = req.body;
 
   const code = generateRandom(111111, 999999);
@@ -225,8 +186,6 @@ router.post("/emailVerification", async (req, res) => {
   // 나중에 클라이언트 단에선 안보이게 처리해야 함
   // 왜냐면 그냥 아무 메일이나 쓰고 개발자 도구에서 확인할 수 있으니깐
 
-  res.send({
-    code: code,
-  });
+  res.send({code: code,});
 });
 module.exports = router;
