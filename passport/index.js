@@ -5,7 +5,7 @@ const User = require('../schemas/user');
 
 const SECRET_KEY = process.env.JWT_SECRET;
 const JWTConfig = {
-  jwtFromRequest: ExtractJwt.fromHeader('authorization'),
+  jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
   secretOrKey: SECRET_KEY,
 };
 

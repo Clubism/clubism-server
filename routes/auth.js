@@ -8,44 +8,22 @@ const { smtpTransport } = require("../middlewares/nodemailer");
 const saltRounds = 10;
 
 const SECRET_KEY = process.env.JWT_SECRET;
-/*
-router.post("/token", async (req, res) => {
-  // request에서 body로 clientSecret이 담겨서 와야 함
-  const { clientSecret } = req.body;
 
+// access token이 만료된 경우 refresh token을 검증한 후 새로운 access token 발급
+router.get('/refresh', passport.authenticate("jwt", { session: false }), async (req, res, next) => {
+  // refresh token 검증이 완료되면
   try {
-    // query param으로 id를 넣음
-    const id = req.query.id;
-
-    const user = await User.findOne({ id: id });
-
-    const token = jwt.sign(
-      {
-        id: id,
-      },
-      process.env.JWT_SECRET,
-      {
-        expiresIn: "1m",
-        issuer: "clubism",
-      }
-    );
-    return res.json({
-      code: 200,
-      message: "token is issued",
-      token,
-    });
-  } catch (err) {
-    console.error(err);
-    return res.status(500).json({
-      code: 500,
-      messsage: "server error",
-    });
+    // access token 발급
+    const accessToken = jwt.sign({id: req.user.id,}, SECRET_KEY, {expiresIn: "1h",});
+    return res.status(201).send({ accessToken });
+  }
+  catch (err) {
+  console.error(err);
+    next(err);
   }
 });
-*/
-router.post(
-  "/test",
-  passport.authenticate("jwt", { session: false }),
+
+router.post("/test", passport.authenticate("jwt", { session: false }),
   async (req, res, next) => {
     try {
       console.log("Reached");
@@ -58,7 +36,7 @@ router.post(
   }
 );
 
-router.get("/userSession", (req, res) => {
+router.get("/userSession", passport.authenticate("jwt", { session: false }), (req, res) => {
   //console.log(req.session);
   //console.log(req.session.isLoggedIn);
   console.log(req.isAuthenticated());
@@ -72,7 +50,16 @@ router.get("/join", (req, res) => {
 router.post("/join", async (req, res) => {
   console.log(req.body);
   // console.log("test1");
-  const { username, id, password } = req.body;
+  const {
+    username,
+    id,
+    password,
+    favorites,
+    major,
+    subMajor,
+    emailNotification,
+    emailSogang,
+  } = req.body;
   // const { username, id, password } = JSON.parse(req.body);
   // username, id, password를 가입할때 받는 것으로 가정.
   // console.log(username, id, password);
@@ -80,9 +67,9 @@ router.post("/join", async (req, res) => {
     // Store hash in your password DB.
     try {
       await User.create({
-        username: username,
-        id: id,
-        password: hashedPassword,
+        username: username, id: id, password: hashedPassword,
+        favorites: favorites, major: major, subMajor: subMajor,
+        emailNotification: emailNotification, emailSogang: emailSogang,
         // 이 부분은 회원가입 폼에 따라서 달라짐.
       });
     } catch (e) {
@@ -91,6 +78,7 @@ router.post("/join", async (req, res) => {
     }
   });
 
+  console.log("join success");
   res.redirect("/");
 });
 
@@ -127,15 +115,10 @@ router.post("/login", (req, res, next) => {
         }
 
         try {
-          const token = jwt.sign(
-            {
-              id: user.id,
-            },
-            SECRET_KEY,
-            {
-              expiresIn: "1h",
-            }
-          );
+          // access token 발급
+          const accessToken = jwt.sign({ id: user.id, }, SECRET_KEY, { expiresIn: "10s", });
+          // refresh token 밝브
+          const refreshToken = jwt.sign({}, SECRET_KEY, {expiresIn: "14d",});
           /*
           res.cookie('user', token);
           res.status(201).json({
@@ -144,7 +127,7 @@ router.post("/login", (req, res, next) => {
           });
         */
           //return res.json({ user, token });
-          return res.status(201).send({ user, token });
+          return res.status(201).send({ user, accessToken, refreshToken });
         } catch (err) {
           console.error(err);
           next(err);
@@ -154,14 +137,14 @@ router.post("/login", (req, res, next) => {
   )(req, res, next);
 });
 
-router.get("/logout", async (req, res, next) => {
+router.get("/logout", passport.authenticate("jwt", { session: false }), async (req, res, next) => {
   req.logOut();
   req.session.destroy();
   res.redirect("/");
 });
 
 // 즐겨찾기 db에 추가
-router.post("/favorites/:userId", async (req, res) => {
+router.post("/favorites/:userId", passport.authenticate("jwt", { session: false }), async (req, res) => {
   const userId = req.params.userId;
   const clubName = req.body.clubName;
   await User.updateOne(
@@ -176,7 +159,7 @@ router.post("/favorites/:userId", async (req, res) => {
   res.send(favs.favorites);
 });
 // 즐겨찾기한 동아리 불러오기
-router.get("/favorites/:userId", async (req, res) => {
+router.get("/favorites/:userId", passport.authenticate("jwt", { session: false }), passport.authenticate("jwt", { session: false }), async (req, res) => {
   const userId = req.params.userId;
   const user = await User.findOne({ _id: userId });
 
@@ -184,7 +167,7 @@ router.get("/favorites/:userId", async (req, res) => {
 });
 
 // id 중복 확인
-router.get("/checkId", async (req, res) => {
+router.get("/checkId", passport.authenticate("jwt", { session: false }), async (req, res) => {
   const id = req.query.id;
   const user = await User.findOne({ id: id });
   res.json(user);
@@ -197,7 +180,7 @@ const generateRandom = function (min, max) {
 };
 
 // 이메일 인증 라우터
-router.post("/emailVerification", async (req, res) => {
+router.post("/emailVerification", passport.authenticate("jwt", { session: false }), async (req, res) => {
   const { sendEmail } = req.body;
 
   const code = generateRandom(111111, 999999);

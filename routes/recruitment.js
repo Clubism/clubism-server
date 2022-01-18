@@ -1,12 +1,12 @@
 const express = require("express");
 const router = express.Router();
-
+const passport = require('passport');
 const Recruitment = require("../schemas/recruitment");
 const RecruitSub = require('../schemas/recruitSub');
 const Club = require('../schemas/club');
 const SubClub = require('../schemas/subclubs');
 
-router.post("/post", async(req, res)=>{
+router.post("/post", passport.authenticate("jwt", { session: false }), async(req, res)=>{
   const {type, club, clubName, description, deadline} = req.body;
   
   console.log(req.body);
