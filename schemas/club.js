@@ -2,13 +2,14 @@ const mongoose = require("mongoose");
 
 const { Schema } = mongoose;
 
+const posterSchema = new mongoose.Schema({
+  img: { data: Buffer, contentType: String },
+});
+
 const clubSchema = new Schema({
   name: {
     type: String,
     required: true,
-  },
-  memberNumber: {
-    type: Number,
   },
   category: {
     type: String,
@@ -22,6 +23,19 @@ const clubSchema = new Schema({
     type: String,
     required: false,
   },
+  memberNumber: {
+    type: Number,
+  },
+  memberTotal: {
+    type: Number,
+  },
+  birth: {
+    type: Date,
+  },
+  room: {
+    type: String,
+  },
+  poster: posterSchema,
 });
 
 module.exports = mongoose.model("Club", clubSchema);
