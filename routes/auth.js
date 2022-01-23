@@ -109,7 +109,7 @@ router.post("/login", (req, res, next) => {
 
         try {
           // access token 발급
-          const accessToken = jwt.sign({ id: user.id, }, SECRET_KEY, { expiresIn: "6h", });
+          const accessToken = jwt.sign({ id: user.id, _id: user._id }, SECRET_KEY, { expiresIn: "6h", });
           // refresh token 밝브
           const refreshToken = jwt.sign({}, SECRET_KEY, {expiresIn: "14d",});
           /*
