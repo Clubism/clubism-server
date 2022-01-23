@@ -20,6 +20,12 @@ router.get("/clubinfo/:name", async (req, res) => {
   res.send(clubdata);
 });
 
+router.post("/clubinfo/:name", async (req, res) => {
+  // console.log(req);
+  // console.log(res);
+  console.log(req.body);
+});
+
 // 중앙 동아리 카테고리들 불러오기
 router.get(
   "/category",
