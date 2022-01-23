@@ -29,6 +29,35 @@ router.post('/submit', async(req, res)=>{
   return res.send("post submit success");
 });
 
+router.post('/updatePost/:id', async(req, res)=>{
+  const {title, content, category, postNum, id, writer} = req.body;
+ 
+  // 객체로 만들고 post db에 추가
+  // await Post.create({
+  //   title : title,
+  //   content : content,
+  //   category : category,
+  //   postNum : postNum,
+  //   writer: writer
+  // });
+
+  console.log("update", req);
+  await Post.updateOne(
+    { id: req.params.id },
+    { $set: {
+        title : title,
+        content : content,
+        category : category,
+        postNum : postNum,
+        writer: writer
+      }
+    }
+  );
+
+  return res.send("post submit success");
+});
+
+
 
 //프론트에서 백으로 특정 게시물에 대한 댓글들을 요청했을 때
 router.get('/comment/:id', async(req, res)=>{
