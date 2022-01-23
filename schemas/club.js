@@ -1,5 +1,5 @@
 const mongoose = require("mongoose");
-
+const Recruitment = require('./recruitment');
 const { Schema } = mongoose;
 
 const posterSchema = new mongoose.Schema({
@@ -36,6 +36,7 @@ const clubSchema = new Schema({
     type: String,
   },
   poster: posterSchema,
+  recruitments : [{type : Schema.Types.ObjectId, ref : 'Recruitment'}]
 });
 
 module.exports = mongoose.model("Club", clubSchema);
